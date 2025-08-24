@@ -1,7 +1,7 @@
-import AI from "../../infra/clients/AI"
-import TransactionRepository from "../../infra/database/repositories/TransactionRepository"
-import { Transactions, TransactionsType } from "../entities/Transactions"
-import { IUseCase } from "../interfaces"
+import AI from "../../infra/clients/AI.js"
+import TransactionRepository from "../../infra/database/repositories/TransactionRepository.js"
+import { Transactions, TransactionsType } from "../entities/Transactions.js"
+import { IUseCase } from "../interfaces/index.js"
 
 class ProcessImageMessage implements IUseCase {
   aiInstance: AI

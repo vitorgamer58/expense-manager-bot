@@ -1,6 +1,6 @@
 import { Collection, MongoClient } from "mongodb"
-import { connection } from "../connection"
-import { TransactionsType } from "../../../domain/entities/Transactions"
+import { connection } from "../connection.js"
+import { TransactionsType } from "../../../domain/entities/Transactions.js"
 
 class TransactionRepository {
   client: MongoClient

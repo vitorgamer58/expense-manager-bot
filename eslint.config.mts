@@ -1,17 +1,25 @@
-import js from "@eslint/js"
-import globals from "globals"
+// @ts-check
+
 import eslint from "@eslint/js"
 import tseslint from "typescript-eslint"
+import globals from "globals"
 import eslintConfigPrettier from "eslint-config-prettier/flat"
 
-/** @type {import('@typescript-eslint/utils').TSESLint.FlatConfig.ConfigFile} */
-export default [
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
+export default tseslint.config([
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
-    languageOptions: { globals: globals.node },
-    plugins: { js },
+    ignores: ["node_modules/**", "dist/**"],
+    languageOptions: {
+      globals: globals.node,
+      parser: tseslint.parser,
+      parserOptions: {
+        project: "./tsconfig.json",
+        tsconfigRootDir: __dirname
+      }
+    },
+    plugins: { js: eslint }
   },
-  eslintConfigPrettier,
-]
+  eslint.configs.recommended,
+  tseslint.configs.recommended,
+  eslintConfigPrettier
+])

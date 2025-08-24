@@ -1,6 +1,6 @@
 import { Mistral } from "@mistralai/mistralai"
-import config from "../config"
-import { TransactionsLLM, TransactionsLLMType } from "../../domain/entities/Transactions"
+import config from "../config/index.js"
+import { TransactionsLLM, TransactionsLLMType } from "../../domain/entities/Transactions.js"
 
 class AI {
   client: Mistral

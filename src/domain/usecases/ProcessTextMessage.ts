@@ -1,7 +1,7 @@
-import AI from "../../infra/clients/AI"
-import TransactionRepository from "../../infra/database/repositories/TransactionRepository"
-import { Transactions, TransactionsType } from "../entities/Transactions"
-import { IUseCase } from "../interfaces"
+import AI from "../../infra/clients/AI.js"
+import TransactionRepository from "../../infra/database/repositories/TransactionRepository.js"
+import { Transactions, TransactionsType } from "../entities/Transactions.js"
+import { IUseCase } from "../interfaces/index.js"
 
 class ProcessTextMessage implements IUseCase {
   aiInstance: AI
@@ -11,13 +11,7 @@ class ProcessTextMessage implements IUseCase {
     this.transactionsRepository = new TransactionRepository()
   }
 
-  async execute({
-    text,
-    chatId
-  }: {
-    text: string
-    chatId: number
-  }): Promise<string> {
+  async execute({ text, chatId }: { text: string; chatId: number }): Promise<string> {
     const transactionsFromLLM = await this.aiInstance.informationExtractor(text)
 
     const transactionsWithChatId = Transactions.parse(

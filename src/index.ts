@@ -1,4 +1,4 @@
-import runBot from "./infra/bot"
-import "./infra/database/connection"
+import runBot from "./infra/bot/index.js"
+import "./infra/database/connection.js"
 
 runBot()

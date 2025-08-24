@@ -1,10 +1,10 @@
 import { Telegraf } from "telegraf"
 import { message } from "telegraf/filters"
-import config from "../config"
-import ProcessTextMessage from "../../domain/usecases/ProcessTextMessage"
-import ProcessImageMessage from "../../domain/usecases/ProcessImageMessage"
-import ProcessAudioMessage from "../../domain/usecases/ProcessAudioMessage"
-import GetExpenseReport from "../../domain/usecases/GetExpenseReport"
+import config from "../config/index.js"
+import ProcessTextMessage from "../../domain/usecases/ProcessTextMessage.js"
+import ProcessImageMessage from "../../domain/usecases/ProcessImageMessage.js"
+import ProcessAudioMessage from "../../domain/usecases/ProcessAudioMessage.js"
+import GetExpenseReport from "../../domain/usecases/GetExpenseReport.js"
 
 const runBot = () => {
   const bot = new Telegraf(config.token)

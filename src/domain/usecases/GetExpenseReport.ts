@@ -1,5 +1,5 @@
-import TransactionRepository from "../../infra/database/repositories/TransactionRepository"
-import { IUseCase } from "../interfaces"
+import TransactionRepository from "../../infra/database/repositories/TransactionRepository.js"
+import { IUseCase } from "../interfaces/index.js"
 
 class GetExpenseReport implements IUseCase {
   transactionsRepository: TransactionRepository
