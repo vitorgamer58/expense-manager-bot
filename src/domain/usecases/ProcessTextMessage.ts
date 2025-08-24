@@ -20,7 +20,11 @@ class ProcessTextMessage implements IUseCase {
 
     await this.saveInDatabase(transactionsWithChatId)
 
-    return JSON.stringify(transactionsFromLLM)
+    return JSON.stringify(
+      transactionsWithChatId.map((t) => {
+        return { ...t, date: t.date.toISOString(), id: undefined, chatId: undefined }
+      })
+    )
   }
 
   async saveInDatabase(transactions: TransactionsType): Promise<void> {

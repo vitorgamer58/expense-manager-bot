@@ -47,7 +47,8 @@ class AI {
           role: "system",
           content: `You are an expert extraction algorithm.
           First check if the message is information related to financial transactions. If it does not refer to a transaction or invoice, return an empty message.
-          Extract only the relevant information about financial transactions from the user's message`
+          Extract only the relevant information about financial transactions from the user's message
+          If you do not know the value of an attribute asked to extract, you may omit the attribute's value.`
         },
         {
           role: "user",

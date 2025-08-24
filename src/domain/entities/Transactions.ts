@@ -6,13 +6,16 @@ const BaseTransaction = z.object({
     description: "String description of what this refers to, try include a summary of the type of items purchased."
   }),
   amount: amount,
-  date: z.string()
+  date: z
+    .string({ description: "The date the transaction was made, in ISO 8601 format (YYYY-MM-DD), Leave blank if none" })
+    .optional()
 })
 
 const Transaction = BaseTransaction.extend({
   id: z.string().optional(),
   chatId: z.number(),
   date: z.preprocess((arg) => {
+    if (arg == "") return new Date()
     if (typeof arg === "string" || arg instanceof Date) return new Date(arg)
   }, z.date())
 })
