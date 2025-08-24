@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { amount } from "./amount"
+import { amount } from "./Amount"
 
 const BaseTransaction = z.object({
   description: z.string({

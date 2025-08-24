@@ -1,14 +1,42 @@
 import { Mistral } from "@mistralai/mistralai"
 import config from "../config"
-import {
-  TransactionsLLM,
-  TransactionsLLMType
-} from "../../domain/entities/transactions"
+import { TransactionsLLM, TransactionsLLMType } from "../../domain/entities/Transactions"
 
 class AI {
   client: Mistral
   constructor() {
     this.client = new Mistral({ apiKey: config.mistralApiKey })
+  }
+
+  async extractTextFromAudioUrl(audioUrl: string): Promise<string> {
+    try {
+      const transcriptionResponse = await this.client.audio.transcriptions.complete({
+        model: "voxtral-mini-latest",
+        fileUrl: audioUrl
+      })
+
+      return transcriptionResponse.text
+    } catch (error) {
+      console.error("Error processing Audio:", error)
+      throw error
+    }
+  }
+
+  async extractTextFromImageUrl(imageUrl: string): Promise<string> {
+    try {
+      const ocrResponse = await this.client.ocr.process({
+        model: "mistral-ocr-latest",
+        document: {
+          type: "image_url",
+          imageUrl
+        },
+        includeImageBase64: true
+      })
+      return ocrResponse.pages?.map((page) => page.markdown || "").join("\n") || ""
+    } catch (error) {
+      console.error("Error processing OCR:", error)
+      throw error
+    }
   }
 
   async informationExtractor(text: string): Promise<TransactionsLLMType> {

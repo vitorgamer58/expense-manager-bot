@@ -3,7 +3,7 @@ import TransactionRepository from "../../infra/database/repositories/Transaction
 import { Transactions, TransactionsType } from "../entities/Transactions"
 import { IUseCase } from "../interfaces"
 
-class ProcessTextMessage implements IUseCase {
+class ProcessImageMessage implements IUseCase {
   aiInstance: AI
   transactionsRepository: TransactionRepository
   constructor() {
@@ -11,13 +11,13 @@ class ProcessTextMessage implements IUseCase {
     this.transactionsRepository = new TransactionRepository()
   }
 
-  async execute({
-    text,
-    chatId
-  }: {
-    text: string
-    chatId: number
-  }): Promise<string> {
+  async execute({ imageUrl, chatId }: { imageUrl: string; chatId: number }): Promise<string> {
+    const text = await this.aiInstance.extractTextFromImageUrl(imageUrl)
+
+    if (!text) {
+      return "Não foi possível extrair texto da imagem"
+    }
+
     const transactionsFromLLM = await this.aiInstance.informationExtractor(text)
 
     const transactionsWithChatId = Transactions.parse(
@@ -34,4 +34,4 @@ class ProcessTextMessage implements IUseCase {
   }
 }
 
-export default ProcessTextMessage
+export default ProcessImageMessage

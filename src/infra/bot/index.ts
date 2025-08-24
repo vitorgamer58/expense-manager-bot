@@ -1,6 +1,9 @@
 import { Telegraf } from "telegraf"
+import { message } from "telegraf/filters"
 import config from "../config"
 import ProcessTextMessage from "../../domain/usecases/ProcessTextMessage"
+import ProcessImageMessage from "../../domain/usecases/ProcessImageMessage"
+import ProcessAudioMessage from "../../domain/usecases/ProcessAudioMessage"
 
 const runBot = () => {
   const bot = new Telegraf(config.token)
@@ -9,19 +12,82 @@ const runBot = () => {
     await ctx.reply("pong")
   })
 
-  bot.on("message", async (ctx) => {
+  bot.on(message("text"), async (ctx) => {
     try {
-      if (ctx.text === undefined) {
+      if (ctx.message.text === undefined) {
         await ctx.reply("Apenas mensagens de texto são suportadas")
         return
       }
 
       const instance = new ProcessTextMessage()
 
-      const response = await instance.execute({ text: ctx.text, chatId: ctx.chat.id })
+      const response = await instance.execute({ text: ctx.message.text, chatId: ctx.chat.id })
       await ctx.reply(response)
     } catch (error) {
       console.error("Error on message", error)
+      await ctx.reply("Erro ao processar mensagem")
+    }
+  })
+
+  bot.on(message("photo"), async (ctx) => {
+    try {
+      const imageId = ctx.message.photo[ctx.message.photo.length - 1]?.file_id
+
+      if (imageId === undefined) {
+        await ctx.reply("Ocorreu um erro ao processar a imagem")
+        return
+      }
+
+      const imageUrl = (await bot.telegram.getFileLink(imageId)).toString()
+
+      const instance = new ProcessImageMessage()
+
+      const response = await instance.execute({ imageUrl, chatId: ctx.chat.id })
+      await ctx.reply(response)
+    } catch (error) {
+      console.error("Error on photo", error)
+      await ctx.reply("Erro ao processar mensagem")
+    }
+  })
+
+  bot.on(message("document"), async (ctx) => {
+    try {
+      const fileId = ctx.message.document?.file_id
+
+      if (fileId === undefined) {
+        await ctx.reply("Ocorreu um erro ao processar a imagem")
+        return
+      }
+
+      const imageUrl = (await bot.telegram.getFileLink(fileId)).toString()
+
+      const instance = new ProcessImageMessage()
+
+      const response = await instance.execute({ imageUrl, chatId: ctx.chat.id })
+      await ctx.reply(response)
+    } catch (error) {
+      console.error("Error on document", error)
+      await ctx.reply("Erro ao processar mensagem")
+    }
+  })
+
+  bot.on(message("voice"), async (ctx) => {
+    try {
+      const fileId = ctx.message.voice?.file_id
+
+      if (fileId === undefined) {
+        await ctx.reply("Ocorreu um erro ao processar a imagem")
+        return
+      }
+
+      const fileUrl = (await bot.telegram.getFileLink(fileId)).toString()
+
+      const instance = new ProcessAudioMessage()
+
+      const response = await instance.execute({ audioUrl: fileUrl, chatId: ctx.chat.id })
+      await ctx.reply(response)
+    } catch (error) {
+      console.error("Error on audio", error)
       await ctx.reply("Erro ao processar mensagem")
     }
   })
