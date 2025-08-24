@@ -8,9 +8,31 @@ class TransactionRepository {
   constructor() {
     this.client = connection
 
-    this.collection = this.client
-      .db("expense_manager")
-      .collection("transactions")
+    this.collection = this.client.db("expense_manager").collection("transactions")
+  }
+
+  async getSumExpensesByCurrency(chatId: number) {
+    const expensesByCurrencyAggregate = this.collection.aggregate([
+      {
+        $match: {
+          chatId,
+          "amount.value": { $lt: 0 }
+        }
+      },
+      {
+        $group: {
+          _id: "$amount.currency",
+          totalExpense: { $sum: "$amount.value" }
+        }
+      }
+    ])
+
+    const expensesByCurrency = await expensesByCurrencyAggregate.toArray()
+
+    return expensesByCurrency.map((expense) => ({
+      currency: expense._id,
+      totalExpense: expense.totalExpense
+    }))
   }
 
   async insertMany(transactions: TransactionsType) {

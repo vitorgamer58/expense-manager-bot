@@ -4,12 +4,25 @@ import config from "../config"
 import ProcessTextMessage from "../../domain/usecases/ProcessTextMessage"
 import ProcessImageMessage from "../../domain/usecases/ProcessImageMessage"
 import ProcessAudioMessage from "../../domain/usecases/ProcessAudioMessage"
+import GetExpenseReport from "../../domain/usecases/GetExpenseReport"
 
 const runBot = () => {
   const bot = new Telegraf(config.token)
 
   bot.command("ping", async (ctx) => {
     await ctx.reply("pong")
+  })
+
+  bot.command("resumo", async (ctx) => {
+    try {
+      const instance = new GetExpenseReport()
+
+      const response = await instance.execute(ctx.chat.id)
+      await ctx.reply(response)
+    } catch (error) {
+      console.error("Error on resumo", error)
+      await ctx.reply("Erro ao buscar resumo")
+    }
   })
 
   bot.on(message("text"), async (ctx) => {
