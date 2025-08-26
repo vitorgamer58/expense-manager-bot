@@ -5,9 +5,12 @@ import ProcessTextMessage from "../../domain/usecases/ProcessTextMessage.js"
 import ProcessImageMessage from "../../domain/usecases/ProcessImageMessage.js"
 import ProcessAudioMessage from "../../domain/usecases/ProcessAudioMessage.js"
 import GetExpenseReport from "../../domain/usecases/GetExpenseReport.js"
+import rateLimit from "./middlewares/rateLimit.js"
 
 const runBot = () => {
   const bot = new Telegraf(config.token)
+
+  bot.use(rateLimit())
 
   bot.command("ping", async (ctx) => {
     await ctx.reply("pong")

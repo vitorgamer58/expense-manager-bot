@@ -18,7 +18,7 @@ class ProcessImageMessage implements IUseCase {
   }: {
     imageUrl: string
     chatId: number
-    caption: string | undefined | null
+    caption?: string | undefined
   }): Promise<string> {
     const text = await this.aiInstance.extractTextFromImageUrl(imageUrl)
 

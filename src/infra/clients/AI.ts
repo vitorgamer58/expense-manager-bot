@@ -39,7 +39,7 @@ class AI {
     }
   }
 
-  async informationExtractor(text: string, caption?: string): Promise<TransactionsLLMType> {
+  async informationExtractor(text: string, caption?: string | undefined): Promise<TransactionsLLMType> {
     const chatResponse = await this.client.chat.parse({
       model: "ministral-8b-2410",
       messages: [
