@@ -2,13 +2,16 @@ import { z } from "zod"
 import { amount } from "./Amount.js"
 
 const BaseTransaction = z.object({
-  description: z.string({
-    description: "String description of what this refers to, try include a summary of the type of items purchased."
-  }),
+  description: z
+    .string({
+      description: "String description of what this refers to, try include a summary of the type of items purchased."
+    })
+    .optional(),
   amount: amount,
   date: z
     .string({ description: "The date the transaction was made, in ISO 8601 format (YYYY-MM-DD), Leave blank if none" })
-    .optional()
+    .optional(),
+  itens: z.array(z.string()).optional()
 })
 
 const Transaction = BaseTransaction.extend({
