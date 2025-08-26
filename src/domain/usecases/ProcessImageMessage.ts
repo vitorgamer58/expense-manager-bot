@@ -11,14 +11,22 @@ class ProcessImageMessage implements IUseCase {
     this.transactionsRepository = new TransactionRepository()
   }
 
-  async execute({ imageUrl, chatId }: { imageUrl: string; chatId: number }): Promise<string> {
+  async execute({
+    imageUrl,
+    chatId,
+    caption
+  }: {
+    imageUrl: string
+    chatId: number
+    caption: string | undefined | null
+  }): Promise<string> {
     const text = await this.aiInstance.extractTextFromImageUrl(imageUrl)
 
     if (!text) {
       return "Não foi possível extrair texto da imagem"
     }
 
-    const transactionsFromLLM = await this.aiInstance.informationExtractor(text)
+    const transactionsFromLLM = await this.aiInstance.informationExtractor(text, caption)
 
     const transactionsWithChatId = Transactions.parse(
       transactionsFromLLM.map((transaction) => ({ ...transaction, chatId }))

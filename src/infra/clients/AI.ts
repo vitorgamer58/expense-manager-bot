@@ -39,24 +39,27 @@ class AI {
     }
   }
 
-  async informationExtractor(text: string): Promise<TransactionsLLMType> {
+  async informationExtractor(text: string, caption: string | undefined): Promise<TransactionsLLMType> {
     const chatResponse = await this.client.chat.parse({
-      model: "ministral-3b-2410",
+      model: "ministral-8b-2410",
       messages: [
         {
           role: "system",
           content: `You are an expert extraction algorithm.
           First check if the message is information related to financial transactions. If it does not refer to a transaction or invoice, return an empty message.
           Extract only the relevant information about financial transactions from the user's message
-          If you do not know the value of an attribute asked to extract, you may omit the attribute's value.`
+          If you do not know the value of an attribute asked to extract, you may omit the attribute's value.
+          Description: Is a description of what this refers to, try include a summary of the type of items purchased
+          The amount is negative for expenses, if is a receipt or a bill, consider as a expense
+          If the date is partial, consider that we are in the year of: ${new Date().getFullYear()}`
         },
         {
           role: "user",
-          content: text
+          content: text + (caption ? `\n\nContext: ${caption}` : "")
         }
       ],
       responseFormat: TransactionsLLM,
-      maxTokens: 400,
+      maxTokens: 1200,
       temperature: 0
     })
 

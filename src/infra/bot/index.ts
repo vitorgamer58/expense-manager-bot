@@ -45,6 +45,7 @@ const runBot = () => {
   bot.on(message("photo"), async (ctx) => {
     try {
       const imageId = ctx.message.photo[ctx.message.photo.length - 1]?.file_id
+      const caption = ctx.message.caption
 
       if (imageId === undefined) {
         await ctx.reply("Ocorreu um erro ao processar a imagem")
@@ -55,7 +56,7 @@ const runBot = () => {
 
       const instance = new ProcessImageMessage()
 
-      const response = await instance.execute({ imageUrl, chatId: ctx.chat.id })
+      const response = await instance.execute({ imageUrl, chatId: ctx.chat.id, caption })
       await ctx.reply(response)
     } catch (error) {
       console.error("Error on photo", error)
@@ -66,6 +67,7 @@ const runBot = () => {
   bot.on(message("document"), async (ctx) => {
     try {
       const fileId = ctx.message.document?.file_id
+      const caption = ctx.message.caption
 
       if (fileId === undefined) {
         await ctx.reply("Ocorreu um erro ao processar a imagem")
@@ -76,7 +78,7 @@ const runBot = () => {
 
       const instance = new ProcessImageMessage()
 
-      const response = await instance.execute({ imageUrl, chatId: ctx.chat.id })
+      const response = await instance.execute({ imageUrl, chatId: ctx.chat.id, caption })
       await ctx.reply(response)
     } catch (error) {
       console.error("Error on document", error)
