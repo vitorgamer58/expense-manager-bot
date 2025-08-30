@@ -14,11 +14,13 @@ class ProcessImageMessage implements IUseCase {
   async execute({
     imageUrl,
     chatId,
-    caption
+    caption,
+    language
   }: {
     imageUrl: string
     chatId: number
     caption?: string | undefined
+    language?: string | undefined
   }): Promise<string> {
     const text = await this.aiInstance.extractTextFromImageUrl(imageUrl)
 
@@ -26,7 +28,11 @@ class ProcessImageMessage implements IUseCase {
       return "Não foi possível extrair texto da imagem"
     }
 
-    const transactionsFromLLM = await this.aiInstance.informationExtractor(text, caption)
+    const transactionsFromLLM = await this.aiInstance.informationExtractor({ text, caption, language })
+
+    if (transactionsFromLLM.length === 0) {
+      return "Nenhuma transação financeira encontrada na imagem"
+    }
 
     const transactionsWithChatId = Transactions.parse(
       transactionsFromLLM.map((transaction) => ({ ...transaction, chatId }))

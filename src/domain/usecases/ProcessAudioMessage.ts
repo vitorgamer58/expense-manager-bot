@@ -11,14 +11,26 @@ class ProcessAudioMessage implements IUseCase {
     this.transactionsRepository = new TransactionRepository()
   }
 
-  async execute({ audioUrl, chatId }: { audioUrl: string; chatId: number }): Promise<string> {
+  async execute({
+    audioUrl,
+    chatId,
+    language
+  }: {
+    audioUrl: string
+    chatId: number
+    language?: string | undefined
+  }): Promise<string> {
     const text = await this.aiInstance.extractTextFromAudioUrl(audioUrl)
 
     if (!text) {
       return "Não foi possível extrair texto do audio"
     }
 
-    const transactionsFromLLM = await this.aiInstance.informationExtractor(text)
+    const transactionsFromLLM = await this.aiInstance.informationExtractor({ text, language })
+
+    if (transactionsFromLLM.length === 0) {
+      return "Nenhuma transação financeira encontrada no audio"
+    }
 
     const transactionsWithChatId = Transactions.parse(
       transactionsFromLLM.map((transaction) => ({ ...transaction, chatId }))

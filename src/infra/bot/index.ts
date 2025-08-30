@@ -37,7 +37,11 @@ const runBot = () => {
 
       const instance = new ProcessTextMessage()
 
-      const response = await instance.execute({ text: ctx.message.text, chatId: ctx.chat.id })
+      const response = await instance.execute({
+        text: ctx.message.text,
+        chatId: ctx.chat.id,
+        language: ctx.from?.language_code
+      })
       await ctx.reply(response)
     } catch (error) {
       console.error("Error on message", error)
@@ -59,7 +63,12 @@ const runBot = () => {
 
       const instance = new ProcessImageMessage()
 
-      const response = await instance.execute({ imageUrl, chatId: ctx.chat.id, caption })
+      const response = await instance.execute({
+        imageUrl,
+        chatId: ctx.chat.id,
+        caption,
+        language: ctx.from?.language_code
+      })
       await ctx.reply(response)
     } catch (error) {
       console.error("Error on photo", error)
@@ -81,7 +90,12 @@ const runBot = () => {
 
       const instance = new ProcessImageMessage()
 
-      const response = await instance.execute({ imageUrl, chatId: ctx.chat.id, caption })
+      const response = await instance.execute({
+        imageUrl,
+        chatId: ctx.chat.id,
+        caption,
+        language: ctx.from?.language_code
+      })
       await ctx.reply(response)
     } catch (error) {
       console.error("Error on document", error)

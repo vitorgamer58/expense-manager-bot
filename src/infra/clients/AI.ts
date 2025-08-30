@@ -39,9 +39,17 @@ class AI {
     }
   }
 
-  async informationExtractor(text: string, caption?: string | undefined): Promise<TransactionsLLMType> {
+  async informationExtractor({
+    text,
+    caption,
+    language
+  }: {
+    text: string
+    caption?: string | undefined
+    language?: string | undefined
+  }): Promise<TransactionsLLMType> {
     const chatResponse = await this.client.chat.parse({
-      model: "ministral-8b-2410",
+      model: "mistral-large-latest",
       messages: [
         {
           role: "system",
@@ -51,7 +59,9 @@ class AI {
           If you do not know the value of an attribute asked to extract, you may omit the attribute's value.
           Description: Is a description of what this refers to, try include a summary of the type of items purchased
           The amount is negative for expenses, if is a receipt or a bill, consider as a expense
-          If the date is partial, consider that we are in the year of: ${new Date().getFullYear()}`
+          If the date is partial, consider the actual year: ${new Date().getFullYear()}
+          If don't have date, consider the actual date: ${new Date().toISOString().split("T")[0]}
+          ${language ? `The user speaks ${language}, so answer in ${language}` : "Answer in English"}`
         },
         {
           role: "user",
@@ -59,7 +69,7 @@ class AI {
         }
       ],
       responseFormat: TransactionsLLM,
-      maxTokens: 1200,
+      maxTokens: 4024,
       temperature: 0
     })
 

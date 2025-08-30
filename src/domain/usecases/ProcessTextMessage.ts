@@ -11,8 +11,20 @@ class ProcessTextMessage implements IUseCase {
     this.transactionsRepository = new TransactionRepository()
   }
 
-  async execute({ text, chatId }: { text: string; chatId: number }): Promise<string> {
-    const transactionsFromLLM = await this.aiInstance.informationExtractor(text)
+  async execute({
+    text,
+    chatId,
+    language
+  }: {
+    text: string
+    chatId: number
+    language?: string | undefined
+  }): Promise<string> {
+    const transactionsFromLLM = await this.aiInstance.informationExtractor({ text, language })
+
+    if (transactionsFromLLM.length === 0) {
+      return "Nenhuma transação financeira encontrada no texto"
+    }
 
     const transactionsWithChatId = Transactions.parse(
       transactionsFromLLM.map((transaction) => ({ ...transaction, chatId }))
