@@ -1,6 +1,7 @@
 import { Collection, MongoClient } from "mongodb"
 import { connection } from "../connection.js"
 import { AuditType } from "../../../domain/entities/Audit.js"
+import config from "../../config/index.js"
 
 class AuditRepository {
   client: MongoClient
@@ -8,7 +9,7 @@ class AuditRepository {
   constructor() {
     this.client = connection
 
-    this.collection = this.client.db("expense_manager").collection("audits")
+    this.collection = this.client.db(config.database.name).collection("audits")
   }
 
   async countAuditsByChatIdSinceDate(chatId: number, date: Date) {

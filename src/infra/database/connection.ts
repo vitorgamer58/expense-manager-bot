@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb"
 import config from "../config/index.js"
 
-const mongoClient = new MongoClient(config.mongoConnectionString)
+const mongoClient = new MongoClient(config.database.connectionString)
 
 async function run() {
   await mongoClient.connect()

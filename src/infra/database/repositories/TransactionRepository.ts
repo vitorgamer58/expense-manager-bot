@@ -1,6 +1,7 @@
 import { Collection, MongoClient } from "mongodb"
 import { connection } from "../connection.js"
 import { TransactionsType } from "../../../domain/entities/Transactions.js"
+import config from "../../config/index.js"
 
 class TransactionRepository {
   client: MongoClient
@@ -8,7 +9,7 @@ class TransactionRepository {
   constructor() {
     this.client = connection
 
-    this.collection = this.client.db("expense_manager").collection("transactions")
+    this.collection = this.client.db(config.database.name).collection("transactions")
   }
 
   async getSumExpensesByCurrency(chatId: number) {
