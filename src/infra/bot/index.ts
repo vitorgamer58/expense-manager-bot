@@ -9,6 +9,7 @@ import rateLimit from "./middlewares/rateLimit.js"
 
 import TransactionRepository from "../database/repositories/TransactionRepository.js"
 import AI from "../clients/AI.js"
+import { formatResponse } from "../helpers/formatResponse.js"
 
 const aiClient = new AI()
 const transactionsRepository = new TransactionRepository()
@@ -43,12 +44,15 @@ const runBot = () => {
 
       const instance = new ProcessTextMessage({ aiClient, transactionsRepository })
 
-      const response = await instance.execute({
+      const result = await instance.execute({
         text: ctx.message.text,
         chatId: ctx.chat.id,
         language: ctx.from?.language_code
       })
-      await ctx.reply(response)
+
+      const response = formatResponse(result)
+
+      await ctx.reply(response, { parse_mode: "Markdown" })
     } catch (error) {
       console.error("Error on message", error)
       await ctx.reply("Erro ao processar mensagem")
@@ -69,13 +73,16 @@ const runBot = () => {
 
       const instance = new ProcessImageMessage({ aiClient, transactionsRepository })
 
-      const response = await instance.execute({
+      const result = await instance.execute({
         imageUrl,
         chatId: ctx.chat.id,
         caption,
         language: ctx.from?.language_code
       })
-      await ctx.reply(response)
+
+      const response = formatResponse(result)
+
+      await ctx.reply(response, { parse_mode: "Markdown" })
     } catch (error) {
       console.error("Error on photo", error)
       await ctx.reply("Erro ao processar mensagem")
@@ -96,13 +103,16 @@ const runBot = () => {
 
       const instance = new ProcessImageMessage({ aiClient, transactionsRepository })
 
-      const response = await instance.execute({
+      const result = await instance.execute({
         imageUrl,
         chatId: ctx.chat.id,
         caption,
         language: ctx.from?.language_code
       })
-      await ctx.reply(response)
+
+      const response = formatResponse(result)
+
+      await ctx.reply(response, { parse_mode: "Markdown" })
     } catch (error) {
       console.error("Error on document", error)
       await ctx.reply("Erro ao processar mensagem")
@@ -122,8 +132,11 @@ const runBot = () => {
 
       const instance = new ProcessAudioMessage({ aiClient, transactionsRepository })
 
-      const response = await instance.execute({ audioUrl: fileUrl, chatId: ctx.chat.id })
-      await ctx.reply(response)
+      const result = await instance.execute({ audioUrl: fileUrl, chatId: ctx.chat.id })
+
+      const response = formatResponse(result)
+
+      await ctx.reply(response, { parse_mode: "Markdown" })
     } catch (error) {
       console.error("Error on audio", error)
       await ctx.reply("Erro ao processar mensagem")

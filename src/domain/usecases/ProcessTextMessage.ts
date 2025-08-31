@@ -19,24 +19,20 @@ class ProcessTextMessage implements IUseCase {
     text: string
     chatId: number
     language?: string | undefined
-  }): Promise<string> {
+  }): Promise<TransactionsType> {
     const transactionsFromLLM = await this.aiInstance.informationExtractor({ text, language })
 
     if (transactionsFromLLM.length === 0) {
-      return "Nenhuma transação financeira encontrada no texto"
+      return []
     }
 
     const transactionsWithChatId = Transactions.parse(
       transactionsFromLLM.map((transaction) => ({ ...transaction, chatId }))
     )
 
-    await this.saveInDatabase(transactionsWithChatId)
+    await this.saveInDatabase([...transactionsWithChatId])
 
-    return JSON.stringify(
-      transactionsWithChatId.map((t) => {
-        return { ...t, date: t.date.toISOString(), id: undefined, chatId: undefined }
-      })
-    )
+    return transactionsWithChatId
   }
 
   async saveInDatabase(transactions: TransactionsType): Promise<void> {

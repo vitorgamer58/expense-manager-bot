@@ -21,26 +21,26 @@ class ProcessImageMessage implements IUseCase {
     chatId: number
     caption?: string | undefined
     language?: string | undefined
-  }): Promise<string> {
+  }): Promise<TransactionsType> {
     const text = await this.aiInstance.extractTextFromImageUrl(imageUrl)
 
     if (!text) {
-      return "Não foi possível extrair texto da imagem"
+      return []
     }
 
     const transactionsFromLLM = await this.aiInstance.informationExtractor({ text, caption, language })
 
     if (transactionsFromLLM.length === 0) {
-      return "Nenhuma transação financeira encontrada na imagem"
+      return []
     }
 
     const transactionsWithChatId = Transactions.parse(
       transactionsFromLLM.map((transaction) => ({ ...transaction, chatId }))
     )
 
-    await this.saveInDatabase(transactionsWithChatId)
+    await this.saveInDatabase([...transactionsWithChatId])
 
-    return JSON.stringify(transactionsFromLLM)
+    return transactionsWithChatId
   }
 
   async saveInDatabase(transactions: TransactionsType): Promise<void> {

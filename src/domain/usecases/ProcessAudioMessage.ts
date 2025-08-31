@@ -19,17 +19,17 @@ class ProcessAudioMessage implements IUseCase {
     audioUrl: string
     chatId: number
     language?: string | undefined
-  }): Promise<string> {
+  }): Promise<TransactionsType> {
     const text = await this.aiInstance.extractTextFromAudioUrl(audioUrl)
 
     if (!text) {
-      return "Não foi possível extrair texto do audio"
+      return []
     }
 
     const transactionsFromLLM = await this.aiInstance.informationExtractor({ text, language })
 
     if (transactionsFromLLM.length === 0) {
-      return "Nenhuma transação financeira encontrada no audio"
+      return []
     }
 
     const transactionsWithChatId = Transactions.parse(
@@ -38,7 +38,7 @@ class ProcessAudioMessage implements IUseCase {
 
     await this.saveInDatabase(transactionsWithChatId)
 
-    return JSON.stringify(transactionsFromLLM)
+    return transactionsWithChatId
   }
 
   async saveInDatabase(transactions: TransactionsType): Promise<void> {
