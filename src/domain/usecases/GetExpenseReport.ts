@@ -3,8 +3,8 @@ import { IUseCase } from "../interfaces/index.js"
 
 class GetExpenseReport implements IUseCase {
   transactionsRepository: TransactionRepository
-  constructor() {
-    this.transactionsRepository = new TransactionRepository()
+  constructor({ transactionsRepository }: { transactionsRepository: TransactionRepository }) {
+    this.transactionsRepository = transactionsRepository
   }
 
   async execute(chatId: number): Promise<string> {

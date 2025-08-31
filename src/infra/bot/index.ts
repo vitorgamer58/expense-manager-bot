@@ -7,6 +7,12 @@ import ProcessAudioMessage from "../../domain/usecases/ProcessAudioMessage.js"
 import GetExpenseReport from "../../domain/usecases/GetExpenseReport.js"
 import rateLimit from "./middlewares/rateLimit.js"
 
+import TransactionRepository from "../database/repositories/TransactionRepository.js"
+import AI from "../clients/AI.js"
+
+const aiClient = new AI()
+const transactionsRepository = new TransactionRepository()
+
 const runBot = () => {
   const bot = new Telegraf(config.token)
 
@@ -18,7 +24,7 @@ const runBot = () => {
 
   bot.command("resumo", async (ctx) => {
     try {
-      const instance = new GetExpenseReport()
+      const instance = new GetExpenseReport({ transactionsRepository })
 
       const response = await instance.execute(ctx.chat.id)
       await ctx.reply(response)
@@ -35,7 +41,7 @@ const runBot = () => {
         return
       }
 
-      const instance = new ProcessTextMessage()
+      const instance = new ProcessTextMessage({ aiClient, transactionsRepository })
 
       const response = await instance.execute({
         text: ctx.message.text,
@@ -61,7 +67,7 @@ const runBot = () => {
 
       const imageUrl = (await bot.telegram.getFileLink(imageId)).toString()
 
-      const instance = new ProcessImageMessage()
+      const instance = new ProcessImageMessage({ aiClient, transactionsRepository })
 
       const response = await instance.execute({
         imageUrl,
@@ -88,7 +94,7 @@ const runBot = () => {
 
       const imageUrl = (await bot.telegram.getFileLink(fileId)).toString()
 
-      const instance = new ProcessImageMessage()
+      const instance = new ProcessImageMessage({ aiClient, transactionsRepository })
 
       const response = await instance.execute({
         imageUrl,
@@ -114,7 +120,7 @@ const runBot = () => {
 
       const fileUrl = (await bot.telegram.getFileLink(fileId)).toString()
 
-      const instance = new ProcessAudioMessage()
+      const instance = new ProcessAudioMessage({ aiClient, transactionsRepository })
 
       const response = await instance.execute({ audioUrl: fileUrl, chatId: ctx.chat.id })
       await ctx.reply(response)

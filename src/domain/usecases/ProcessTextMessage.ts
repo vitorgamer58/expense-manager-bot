@@ -6,9 +6,9 @@ import { IUseCase } from "../interfaces/index.js"
 class ProcessTextMessage implements IUseCase {
   aiInstance: AI
   transactionsRepository: TransactionRepository
-  constructor() {
-    this.aiInstance = new AI()
-    this.transactionsRepository = new TransactionRepository()
+  constructor({ aiClient, transactionsRepository }: { aiClient: AI; transactionsRepository: TransactionRepository }) {
+    this.aiInstance = aiClient
+    this.transactionsRepository = transactionsRepository
   }
 
   async execute({
