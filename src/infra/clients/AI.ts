@@ -39,6 +39,23 @@ class AI {
     }
   }
 
+  async extractTextFromPdfUrl(pdfUrl: string): Promise<string> {
+    try {
+      const ocrResponse = await this.client.ocr.process({
+        model: "mistral-ocr-latest",
+        document: {
+          type: "document_url",
+          documentUrl: pdfUrl
+        },
+        includeImageBase64: true
+      })
+      return ocrResponse.pages?.map((page) => page.markdown || "").join("\n") || ""
+    } catch (error) {
+      console.error("Error processing OCR:", error)
+      throw error
+    }
+  }
+
   async informationExtractor({
     text,
     caption,
