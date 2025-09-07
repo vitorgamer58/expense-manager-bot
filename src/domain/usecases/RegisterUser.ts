@@ -1,19 +1,19 @@
-import UserRepository from "../../infra/database/repositories/UserRepository.js"
 import { UserType } from "../entities/User.js"
-import { IUseCase } from "../interfaces/index.js"
+import { IUserRepository } from "../interfaces/repositories.js"
+import { IUseCase } from "../interfaces/usecases.js"
 
 class RegisterUser implements IUseCase {
-  userRepository: UserRepository
-  constructor({ userRepository }: { userRepository: UserRepository }) {
-    this.userRepository = userRepository
+  private _userRepository: IUserRepository
+  constructor({ userRepository }: { userRepository: IUserRepository }) {
+    this._userRepository = userRepository
   }
 
   async execute({ user }: { user: UserType }): Promise<void> {
     return await this.insertUserInDatabase(user)
   }
 
-  async insertUserInDatabase(user: UserType): Promise<void> {
-    await this.userRepository.insertOne(user)
+  private async insertUserInDatabase(user: UserType): Promise<void> {
+    await this._userRepository.insertOne(user)
   }
 }
 

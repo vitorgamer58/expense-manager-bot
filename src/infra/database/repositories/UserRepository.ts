@@ -2,8 +2,9 @@ import { Collection, MongoClient } from "mongodb"
 import { connection } from "../connection.js"
 import config from "../../config/index.js"
 import { UserType } from "../../../domain/entities/User.js"
+import { IUserRepository } from "../../../domain/interfaces/repositories.js"
 
-class UserRepository {
+class UserRepository implements IUserRepository {
   client: MongoClient
   collection: Collection
   constructor() {

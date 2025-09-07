@@ -1,12 +1,12 @@
 import { Telegraf } from "telegraf"
-import { IUseCase } from "../interfaces/index.js"
+import { IUseCase } from "../interfaces/usecases.js"
 import config from "../../infra/config/index.js"
 import { ValidateDocument } from "../enums/validateDocument.js"
 
 class ValidateDocumentAndGetUrl implements IUseCase {
-  botInstance: Telegraf
+  private _botInstance: Telegraf
   constructor({ botInstance }: { botInstance: Telegraf }) {
-    this.botInstance = botInstance
+    this._botInstance = botInstance
   }
 
   async execute({
@@ -22,16 +22,16 @@ class ValidateDocumentAndGetUrl implements IUseCase {
 
     if (this._isValidFileType(fileType) == false) return { type: ValidateDocument.DOCUMENT_INVALID_TYPE }
 
-    const fileUrl = (await this.botInstance.telegram.getFileLink(fileId)).href
+    const fileUrl = (await this._botInstance.telegram.getFileLink(fileId)).href
 
     return { type: ValidateDocument.DOCUMENT_VALIDATED, fileUrl }
   }
 
-  _isValidFileSize(fileSize: number): boolean {
+  private _isValidFileSize(fileSize: number): boolean {
     return fileSize <= config.maxFileSize
   }
 
-  _isValidFileType(fileType: string): boolean {
+  private _isValidFileType(fileType: string): boolean {
     const validFileTypes = ["image/jpeg", "image/jpg", "image/png", "application/pdf"]
     return validFileTypes.includes(fileType)
   }

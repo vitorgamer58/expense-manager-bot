@@ -1,14 +1,14 @@
-import AI from "../../infra/clients/AI.js"
-import TransactionRepository from "../../infra/database/repositories/TransactionRepository.js"
 import { Transactions, TransactionsType } from "../entities/Transactions.js"
-import { IUseCase } from "../interfaces/index.js"
+import { IAIClient } from "../interfaces/clients.js"
+import { ITransactionRepository } from "../interfaces/repositories.js"
+import { IUseCase } from "../interfaces/usecases.js"
 
 class ProcessAudioMessage implements IUseCase {
-  aiInstance: AI
-  transactionsRepository: TransactionRepository
-  constructor({ aiClient, transactionsRepository }: { aiClient: AI; transactionsRepository: TransactionRepository }) {
-    this.aiInstance = aiClient
-    this.transactionsRepository = transactionsRepository
+  private _aiInstance: IAIClient
+  private _transactionsRepository: ITransactionRepository
+  constructor({ aiClient, transactionsRepository }: { aiClient: IAIClient; transactionsRepository: ITransactionRepository }) {
+    this._aiInstance = aiClient
+    this._transactionsRepository = transactionsRepository
   }
 
   async execute({
@@ -20,13 +20,13 @@ class ProcessAudioMessage implements IUseCase {
     chatId: number
     language?: string | undefined
   }): Promise<TransactionsType> {
-    const text = await this.aiInstance.extractTextFromAudioUrl(audioUrl)
+    const text = await this._aiInstance.extractTextFromAudioUrl(audioUrl)
 
     if (!text) {
       return []
     }
 
-    const transactionsFromLLM = await this.aiInstance.informationExtractor({ text, language })
+    const transactionsFromLLM = await this._aiInstance.informationExtractor({ text, language })
 
     if (transactionsFromLLM.length === 0) {
       return []
@@ -41,8 +41,8 @@ class ProcessAudioMessage implements IUseCase {
     return transactionsWithChatId
   }
 
-  async saveInDatabase(transactions: TransactionsType): Promise<void> {
-    await this.transactionsRepository.insertMany(transactions)
+  private async saveInDatabase(transactions: TransactionsType): Promise<void> {
+    await this._transactionsRepository.insertMany(transactions)
   }
 }
 

@@ -2,8 +2,9 @@ import { Collection, MongoClient } from "mongodb"
 import { connection } from "../connection.js"
 import { TransactionsType } from "../../../domain/entities/Transactions.js"
 import config from "../../config/index.js"
+import { ITransactionRepository } from "../../../domain/interfaces/repositories.js"
 
-class TransactionRepository {
+class TransactionRepository implements ITransactionRepository {
   client: MongoClient
   collection: Collection
   constructor() {

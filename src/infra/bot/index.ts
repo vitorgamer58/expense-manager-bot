@@ -8,7 +8,7 @@ import GetExpenseReport from "../../domain/usecases/GetExpenseReport.js"
 import rateLimit from "./middlewares/rateLimit.js"
 
 import TransactionRepository from "../database/repositories/TransactionRepository.js"
-import AI from "../clients/AI.js"
+import AIClient from "../clients/AI.js"
 import ProcessDocumentMessage from "../../domain/usecases/ProcessDocumentMessage.js"
 import { formatResponse } from "../helpers/formatResponse.js"
 import ValidateDocumentAndGetUrl from "../../domain/usecases/ValidateDocumentAndGetUrl.js"
@@ -16,7 +16,7 @@ import { ValidateDocument } from "../../domain/enums/validateDocument.js"
 import registerUser from "./middlewares/registerUser.js"
 import UserRepository from "../database/repositories/UserRepository.js"
 
-const aiClient = new AI()
+const aiClient = new AIClient()
 const transactionsRepository = new TransactionRepository()
 const userRepository = new UserRepository()
 

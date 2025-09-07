@@ -1,8 +1,9 @@
 import { Mistral } from "@mistralai/mistralai"
 import config from "../config/index.js"
 import { TransactionsLLM, TransactionsLLMType } from "../../domain/entities/Transactions.js"
+import { IAIClient } from "../../domain/interfaces/clients.js"
 
-class AI {
+class AIClient implements IAIClient {
   client: Mistral
   constructor() {
     this.client = new Mistral({ apiKey: config.mistralApiKey })
@@ -94,4 +95,4 @@ class AI {
   }
 }
 
-export default AI
+export default AIClient

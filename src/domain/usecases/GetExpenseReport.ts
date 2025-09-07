@@ -1,14 +1,14 @@
-import TransactionRepository from "../../infra/database/repositories/TransactionRepository.js"
-import { IUseCase } from "../interfaces/index.js"
+import { ITransactionRepository } from "../interfaces/repositories.js"
+import { IUseCase } from "../interfaces/usecases.js"
 
 class GetExpenseReport implements IUseCase {
-  transactionsRepository: TransactionRepository
-  constructor({ transactionsRepository }: { transactionsRepository: TransactionRepository }) {
-    this.transactionsRepository = transactionsRepository
+  private _transactionsRepository: ITransactionRepository
+  constructor({ transactionsRepository }: { transactionsRepository: ITransactionRepository }) {
+    this._transactionsRepository = transactionsRepository
   }
 
   async execute(chatId: number): Promise<string> {
-    const expensesByCurrency = await this.transactionsRepository.getSumExpensesByCurrency(chatId)
+    const expensesByCurrency = await this._transactionsRepository.getSumExpensesByCurrency(chatId)
 
     if (expensesByCurrency.length === 0) {
       return "Nenhuma despesa encontrada."
