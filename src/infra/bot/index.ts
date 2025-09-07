@@ -13,13 +13,17 @@ import ProcessDocumentMessage from "../../domain/usecases/ProcessDocumentMessage
 import { formatResponse } from "../helpers/formatResponse.js"
 import ValidateDocumentAndGetUrl from "../../domain/usecases/ValidateDocumentAndGetUrl.js"
 import { ValidateDocument } from "../../domain/enums/validateDocument.js"
+import registerUser from "./middlewares/registerUser.js"
+import UserRepository from "../database/repositories/UserRepository.js"
 
 const aiClient = new AI()
 const transactionsRepository = new TransactionRepository()
+const userRepository = new UserRepository()
 
 const runBot = () => {
   const bot = new Telegraf(config.token)
 
+  bot.use(registerUser({ userRepository }))
   bot.use(rateLimit())
 
   bot.command("ping", async (ctx) => {
@@ -112,7 +116,7 @@ const runBot = () => {
         fileSize: ctx.message.document.file_size,
         fileType: ctx.message.document.mime_type || ""
       })
-      
+
       switch (type) {
         case ValidateDocument.DOCUMENT_TOO_LARGE:
           await ctx.reply("O documento é muito grande. O tamanho máximo é 5MB.")
