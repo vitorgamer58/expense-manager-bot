@@ -1,6 +1,6 @@
 import { Collection, MongoClient } from "mongodb"
 import { connection } from "../connection.js"
-import { TransactionsType } from "../../../domain/entities/Transactions.js"
+import { Transaction, TransactionsType } from "../../../domain/entities/Transactions.js"
 import config from "../../config/index.js"
 import { ITransactionRepository } from "../../../domain/interfaces/repositories.js"
 
@@ -35,6 +35,14 @@ class TransactionRepository implements ITransactionRepository {
       currency: expense._id,
       totalExpense: expense.totalExpense
     }))
+  }
+
+  async getAllByChatId(chatId: number): Promise<TransactionsType> {
+    const documents = await this.collection.find({ chatId }).toArray()
+
+    return documents.map((transaction) => {
+      return Transaction.parse({ ...transaction })
+    })
   }
 
   async insertMany(transactions: TransactionsType) {

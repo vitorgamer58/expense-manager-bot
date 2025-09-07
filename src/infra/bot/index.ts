@@ -30,12 +30,16 @@ const runBot = () => {
     await ctx.reply("pong")
   })
 
-  bot.command("resumo", async (ctx) => {
+  bot.command("excelreport", async (ctx) => {
     try {
       const instance = new GetExpenseReport({ transactionsRepository })
 
       const response = await instance.execute(ctx.chat.id)
-      await ctx.reply(response)
+
+      await ctx.replyWithDocument(
+        { source: response, filename: "report.xlsx" },
+        { caption: "Aqui está seu resumo em excel" }
+      )
     } catch (error) {
       console.error("Error on resumo", error)
       await ctx.reply("Erro ao buscar resumo")
