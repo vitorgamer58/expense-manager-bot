@@ -7,8 +7,11 @@ import eslintConfigPrettier from "eslint-config-prettier/flat"
 
 export default tseslint.config([
   {
+    ignores: ["dist/**", "node_modules/**"]
+  },
+  {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
-    ignores: ["node_modules/**", "dist/**", 'eslint.config.mts'],
+    ignores: ["node_modules/**", "dist/**", "eslint.config.mts"],
     languageOptions: {
       globals: globals.node,
       parser: tseslint.parser,

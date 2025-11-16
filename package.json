@@ -9,7 +9,7 @@
     "build": "tsc",
     "start": "node dist/src/index.js",
     "dev": "tsx src/index.ts --trace-deprecation",
-    "lint-fix": "eslint . --fix",
+    "lint-fix": "eslint . --fix && prettier --write .",
     "prettier": "prettier --write ."
   },
   "author": "vitorgamer58",

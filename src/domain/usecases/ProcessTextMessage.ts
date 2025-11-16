@@ -6,7 +6,13 @@ import { IUseCase } from "../interfaces/usecases.js"
 class ProcessTextMessage implements IUseCase {
   _aiInstance: IAIClient
   _transactionsRepository: ITransactionRepository
-  constructor({ aiClient, transactionsRepository }: { aiClient: IAIClient; transactionsRepository: ITransactionRepository }) {
+  constructor({
+    aiClient,
+    transactionsRepository
+  }: {
+    aiClient: IAIClient
+    transactionsRepository: ITransactionRepository
+  }) {
     this._aiInstance = aiClient
     this._transactionsRepository = transactionsRepository
   }

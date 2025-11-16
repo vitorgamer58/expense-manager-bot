@@ -43,5 +43,5 @@
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true
   },
-  "exclude": ["eslint.config.mts"]
+  "exclude": ["eslint.config.mts", "dist"]
 }
