@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@mistralai/mistralai": "^1.9.18",
+    "axios": "^1.13.2",
     "dotenv": "^17.2.1",
     "exceljs": "^4.4.0",
     "mongodb": "^6.18.0",

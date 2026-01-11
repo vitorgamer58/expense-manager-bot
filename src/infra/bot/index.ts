@@ -15,8 +15,11 @@ import ValidateDocumentAndGetUrl from "../../domain/usecases/ValidateDocumentAnd
 import { ValidateDocument } from "../../domain/enums/validateDocument.js"
 import registerUser from "./middlewares/registerUser.js"
 import UserRepository from "../database/repositories/UserRepository.js"
+import { MimeTypeDocument } from "../../domain/enums/mimeTypeDocument.js"
+import FileClient from "../clients/FileClient.js"
 
 const aiClient = new AIClient()
+const fileClient = new FileClient()
 const transactionsRepository = new TransactionRepository()
 const userRepository = new UserRepository()
 
@@ -136,11 +139,11 @@ const runBot = () => {
       }
 
       let instance
-
-      if (fileType.startsWith("image/")) {
+      fileType.startsWith("image/")
+      if ([MimeTypeDocument.IMAGE_JPEG, MimeTypeDocument.IMAGE_JPG, MimeTypeDocument.IMAGE_PNG].includes(fileType)) {
         instance = new ProcessImageMessage({ aiClient, transactionsRepository })
-      } else if (fileType === "application/pdf") {
-        instance = new ProcessDocumentMessage({ aiClient, transactionsRepository })
+      } else if ([MimeTypeDocument.APPLICATION_PDF, MimeTypeDocument.TEXT_CSV].includes(fileType)) {
+        instance = new ProcessDocumentMessage({ aiClient, fileClient, transactionsRepository })
       } else {
         await ctx.reply("Tipo de documento não suportado. Envie uma imagem ou PDF.")
         return
@@ -149,6 +152,7 @@ const runBot = () => {
       const result = await instance.execute({
         imageUrl: fileUrl!,
         documentUrl: fileUrl!,
+        mimeType: fileType,
         chatId: ctx.chat.id,
         caption,
         language: ctx.from?.language_code

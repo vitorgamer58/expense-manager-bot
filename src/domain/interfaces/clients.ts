@@ -1,4 +1,5 @@
 import { TransactionsLLMType } from "../entities/Transactions.js"
+import { Readable } from "stream"
 
 export interface IAIClient {
   extractTextFromAudioUrl(audioUrl: string): Promise<string>
@@ -13,4 +14,8 @@ export interface IAIClient {
     caption?: string | undefined
     language?: string | undefined
   }): Promise<TransactionsLLMType>
+}
+
+export interface IFileClient {
+  downloadFile(fileUrl: string): Promise<Readable>
 }

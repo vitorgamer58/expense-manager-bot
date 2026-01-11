@@ -2,6 +2,7 @@ import { Telegraf } from "telegraf"
 import { IUseCase } from "../interfaces/usecases.js"
 import config from "../../infra/config/index.js"
 import { ValidateDocument } from "../enums/validateDocument.js"
+import { MimeTypeDocument } from "../enums/mimeTypeDocument.js"
 
 class ValidateDocumentAndGetUrl implements IUseCase {
   private _botInstance: Telegraf
@@ -32,7 +33,7 @@ class ValidateDocumentAndGetUrl implements IUseCase {
   }
 
   private _isValidFileType(fileType: string): boolean {
-    const validFileTypes = ["image/jpeg", "image/jpg", "image/png", "application/pdf"]
+    const validFileTypes = Object.values(MimeTypeDocument)
     return validFileTypes.includes(fileType)
   }
 }
