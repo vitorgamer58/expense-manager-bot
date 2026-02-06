@@ -40,7 +40,7 @@ class ProcessDocumentMessage implements IUseCase {
     const transactions =
       mimeType == MimeTypeDocument.APPLICATION_PDF
         ? await this.extractTransactionsFromDocumentUrl(documentUrl, caption, language)
-        : mimeType == MimeTypeDocument.TEXT_CSV
+        : [MimeTypeDocument.TEXT_CSV, MimeTypeDocument.TEXT_COMMA_SEPARATED_VALUES].includes(mimeType)
           ? await this.extractTransactionsFromTextCSV(documentUrl)
           : []
 

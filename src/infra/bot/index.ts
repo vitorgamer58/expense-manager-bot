@@ -129,7 +129,7 @@ const runBot = () => {
           await ctx.reply("O documento é muito grande. O tamanho máximo é 5MB.")
           return
         case ValidateDocument.DOCUMENT_INVALID_TYPE:
-          await ctx.reply("Tipo de documento não suportado. Envie uma imagem ou PDF.")
+          await ctx.reply("Tipo de documento não suportado. Envie uma imagem, PDF ou CSV.")
           return
         case ValidateDocument.DOCUMENT_VALIDATED:
           break
@@ -142,10 +142,16 @@ const runBot = () => {
       fileType.startsWith("image/")
       if ([MimeTypeDocument.IMAGE_JPEG, MimeTypeDocument.IMAGE_JPG, MimeTypeDocument.IMAGE_PNG].includes(fileType)) {
         instance = new ProcessImageMessage({ aiClient, transactionsRepository })
-      } else if ([MimeTypeDocument.APPLICATION_PDF, MimeTypeDocument.TEXT_CSV].includes(fileType)) {
+      } else if (
+        [
+          MimeTypeDocument.APPLICATION_PDF,
+          MimeTypeDocument.TEXT_CSV,
+          MimeTypeDocument.TEXT_COMMA_SEPARATED_VALUES
+        ].includes(fileType)
+      ) {
         instance = new ProcessDocumentMessage({ aiClient, fileClient, transactionsRepository })
       } else {
-        await ctx.reply("Tipo de documento não suportado. Envie uma imagem ou PDF.")
+        await ctx.reply("Tipo de documento não suportado. Envie uma imagem, PDF ou CSV.")
         return
       }
 
